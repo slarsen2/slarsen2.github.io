@@ -265,6 +265,17 @@
                 streakThreshold: 1
             }
         };
+        
+        // Add the timer variable declaration here
+let timer = {
+    running: false,
+    interval: null,
+    seconds: 0,
+    display: null,
+    startBtn: null,
+    pauseBtn: null,
+    stopBtn: null
+};
 
         // Load data from localStorage
         function loadData() {
