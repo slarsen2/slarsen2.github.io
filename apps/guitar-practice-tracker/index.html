@@ -130,6 +130,21 @@
         .delete-btn:hover {
             background: #d32f2f;
         }
+        .timer-btn {
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    margin-right: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.timer-btn:hover {
+    opacity: 0.9;
+}
+.timer-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
     </style>
 </head>
 <body>
@@ -162,6 +177,15 @@
 
         <div id="log-tab" class="tab-content active">
             <h2>Log Practice Session</h2>
+            <div class="timer-container" style="margin-bottom: 20px; padding: 15px; background-color: #f5f5f5; border-radius: 8px;">
+  <h3>Practice Timer</h3>
+  <div class="timer-display" style="font-size: 2rem; font-weight: bold; margin: 10px 0;">00:00:00</div>
+  <div class="timer-controls">
+    <button id="start-timer" class="timer-btn" style="background-color: #4caf50;">Start</button>
+    <button id="pause-timer" class="timer-btn" style="background-color: #ff9800;" disabled>Pause</button>
+    <button id="stop-timer" class="timer-btn" style="background-color: #f44336;" disabled>Stop</button>
+  </div>
+</div>
             <form id="practice-form">
                 <div class="form-group">
                     <label for="date">Date</label>
@@ -613,6 +637,7 @@
         // Event listeners
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
+            setupTimer();
             
             // Form submission
             document.getElementById('practice-form').addEventListener('submit', savePracticeSession);
@@ -622,6 +647,68 @@
             
             // Add song button
             document.getElementById('add-song-btn').addEventListener('click', addSong);
+            
+            // Timer functionality
+let timer = {
+  running: false,
+  interval: null,
+  seconds: 0,
+  display: null,
+  startBtn: null,
+  pauseBtn: null,
+  stopBtn: null
+};
+
+function setupTimer() {
+  timer.display = document.querySelector('.timer-display');
+  timer.startBtn = document.getElementById('start-timer');
+  timer.pauseBtn = document.getElementById('pause-timer');
+  timer.stopBtn = document.getElementById('stop-timer');
+  
+  timer.startBtn.addEventListener('click', startTimer);
+  timer.pauseBtn.addEventListener('click', pauseTimer);
+  timer.stopBtn.addEventListener('click', stopTimer);
+}
+
+function startTimer() {
+  timer.running = true;
+  timer.startBtn.disabled = true;
+  timer.pauseBtn.disabled = false;
+  timer.stopBtn.disabled = false;
+  
+  timer.interval = setInterval(updateTimer, 1000);
+}
+
+function updateTimer() {
+  timer.seconds++;
+  const hours = Math.floor(timer.seconds / 3600);
+  const minutes = Math.floor((timer.seconds % 3600) / 60);
+  const secs = timer.seconds % 60;
+  
+  timer.display.textContent = `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
+}
+
+function pad(num) {
+  return num.toString().padStart(2, '0');
+}
+
+function pauseTimer() {
+  timer.running = false;
+  timer.startBtn.disabled = false;
+  timer.pauseBtn.disabled = true;
+  
+  clearInterval(timer.interval);
+}
+
+function stopTimer() {
+  const minutes = Math.floor(timer.seconds / 60);
+  document.getElementById('duration').value = minutes;
+  
+  pauseTimer();
+  timer.seconds = 0;
+  timer.display.textContent = '00:00:00';
+  timer.stopBtn.disabled = true;
+}
         });
     </script>
 </body>
