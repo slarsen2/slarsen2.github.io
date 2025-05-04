@@ -871,41 +871,40 @@ function render() {
     const header = document.createElement('header');
     header.className = 'bg-indigo-600 text-white p-4 shadow-md';
     header.innerHTML = `
-        <div class="flex items-center max-w-6xl mx-auto">
-            <div class="mr-4 flex-shrink-0" style="width: 60px; height: 60px;">
-                <svg viewBox="0 0 300 500" width="60" height="60" preserveAspectRatio="xMidYMid meet">
-                    <!-- Guitar SVG code -->
-                    <path 
-                        d="M100,300 C60,350 60,450 100,500 C150,550 200,550 250,500 C290,450 290,350 250,300 C200,250 150,250 100,300 Z" 
-                        fill="#e74c3c" 
-                        stroke="#7d3129" 
-                        stroke-width="4"
-                    />
-                    <rect x="160" y="50" width="30" height="250" fill="#8b4513" stroke="#5d2906" stroke-width="2" />
-                    <rect x="160" y="90" width="30" height="5" fill="#d3d3d3" />
-                    <rect x="160" y="130" width="30" height="5" fill="#d3d3d3" />
-                    <rect x="160" y="170" width="30" height="5" fill="#d3d3d3" />
-                    <rect x="160" y="210" width="30" height="5" fill="#d3d3d3" />
-                    <rect x="160" y="250" width="30" height="5" fill="#d3d3d3" />
-                    <path d="M150,10 L200,10 L200,50 L150,50 Z" fill="#8b4513" stroke="#5d2906" stroke-width="2" />
-                    <circle cx="160" cy="20" r="5" fill="#333" />
-                    <circle cx="160" cy="40" r="5" fill="#333" />
-                    <circle cx="190" cy="20" r="5" fill="#333" />
-                    <circle cx="190" cy="40" r="5" fill="#333" />
-                    <circle cx="175" cy="375" r="40" fill="#222" />
-                    <circle cx="175" cy="375" r="37" fill="none" stroke="#f0d3a7" stroke-width="3" />
-                    <circle cx="175" cy="375" r="30" fill="none" stroke="#8b4513" stroke-width="1.5" />
-                    <rect x="150" y="450" width="50" height="10" fill="#5d2906" />
-                    <path d="M120,425 C140,435 210,435 230,425" fill="none" stroke="#7d3129" stroke-width="3" />
-                    <path d="M110,445 C140,460 210,460 240,445" fill="none" stroke="#7d3129" stroke-width="3" />
-                    <line x1="175" y1="50" x2="175" y2="450" stroke="#d3d3d3" stroke-width="1.5" />
-                    <line x1="165" y1="50" x2="165" y2="450" stroke="#d3d3d3" stroke-width="1.5" />
-                    <line x1="185" y1="50" x2="185" y2="450" stroke="#d3d3d3" stroke-width="1.5" />
-                </svg>
-            </div>
-            <h1 class="text-2xl font-bold">Guitar Practice Tracker</h1>
+    <div class="flex items-center max-w-6xl mx-auto">
+        <div class="mr-4 flex-shrink-0" style="width: 60px; height: 60px;">
+            <svg viewBox="0 0 300 500" width="60" height="60" preserveAspectRatio="xMidYMid meet">
+                <path 
+                    d="M100,300 C60,350 60,450 100,500 C150,550 200,550 250,500 C290,450 290,350 250,300 C200,250 150,250 100,300 Z" 
+                    fill="#e74c3c" 
+                    stroke="#7d3129" 
+                    stroke-width="4"
+                />
+                <rect x="160" y="50" width="30" height="250" fill="#8b4513" stroke="#5d2906" stroke-width="2" />
+                <rect x="160" y="90" width="30" height="5" fill="#d3d3d3" />
+                <rect x="160" y="130" width="30" height="5" fill="#d3d3d3" />
+                <rect x="160" y="170" width="30" height="5" fill="#d3d3d3" />
+                <rect x="160" y="210" width="30" height="5" fill="#d3d3d3" />
+                <rect x="160" y="250" width="30" height="5" fill="#d3d3d3" />
+                <path d="M150,10 L200,10 L200,50 L150,50 Z" fill="#8b4513" stroke="#5d2906" stroke-width="2" />
+                <circle cx="160" cy="20" r="5" fill="#333" />
+                <circle cx="160" cy="40" r="5" fill="#333" />
+                <circle cx="190" cy="20" r="5" fill="#333" />
+                <circle cx="190" cy="40" r="5" fill="#333" />
+                <circle cx="175" cy="375" r="40" fill="#222" />
+                <circle cx="175" cy="375" r="37" fill="none" stroke="#f0d3a7" stroke-width="3" />
+                <circle cx="175" cy="375" r="30" fill="none" stroke="#8b4513" stroke-width="1.5" />
+                <rect x="150" y="450" width="50" height="10" fill="#5d2906" />
+                <path d="M120,425 C140,435 210,435 230,425" fill="none" stroke="#7d3129" stroke-width="3" />
+                <path d="M110,445 C140,460 210,460 240,445" fill="none" stroke="#7d3129" stroke-width="3" />
+                <line x1="175" y1="50" x2="175" y2="450" stroke="#d3d3d3" stroke-width="1.5" />
+                <line x1="165" y1="50" x2="165" y2="450" stroke="#d3d3d3" stroke-width="1.5" />
+                <line x1="185" y1="50" x2="185" y2="450" stroke="#d3d3d3" stroke-width="1.5" />
+            </svg>
         </div>
-    `;
+        <h1 class="text-2xl font-bold">Guitar Practice Tracker</h1>
+    </div>
+`;
     appContainer.appendChild(header);
     
     // Add navigation

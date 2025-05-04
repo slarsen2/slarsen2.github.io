@@ -1,0 +1,17 @@
+{
+  "name": "guitar-practice-tracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+  "build": "babel js/app.js -o dist/app.js"
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@babel/cli": "^7.27.1",
+    "@babel/core": "^7.27.1",
+    "@babel/preset-env": "^7.27.1"
+  }
+}
