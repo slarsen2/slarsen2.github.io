@@ -3,23 +3,626 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guitar Practice Tracker</title>
-    
-    <!-- Replace Tailwind script with direct CSS link -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    
-    <!-- Include Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    
-    <!-- Custom styles -->
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Simple Guitar Practice Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        h1, h2, h3 {
+            color: #3949ab;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], 
+        input[type="number"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3949ab;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #303f9f;
+        }
+        .stats {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            flex: 1;
+            text-align: center;
+        }
+        .sessions {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .tab.active {
+            border-bottom: 2px solid #3949ab;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .technique-item, .song-item {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #3949ab;
+        }
+        .delete-btn {
+            background: #f44336;
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background: #d32f2f;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <div id="app-container" class="flex flex-col min-h-screen">
-        <!-- Content will be loaded dynamically by JavaScript -->
+<body>
+    <div class="container">
+        <header>
+            <h1>Simple Guitar Practice Tracker</h1>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Practice</h3>
+                <p id="total-time">0 minutes</p>
+            </div>
+            <div class="stat-card">
+                <h3>Sessions</h3>
+                <p id="session-count">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Current Streak</h3>
+                <p id="current-streak">0 days</p>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="log">Log Practice</div>
+            <div class="tab" data-tab="techniques">Techniques</div>
+            <div class="tab" data-tab="songs">Songs</div>
+            <div class="tab" data-tab="history">History</div>
+        </div>
+
+        <div id="log-tab" class="tab-content active">
+            <h2>Log Practice Session</h2>
+            <form id="practice-form">
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duration (minutes)</label>
+                    <input type="number" id="duration" min="1" value="30" required>
+                </div>
+                <div class="form-group">
+                    <label>Techniques Practiced</label>
+                    <div id="technique-checkboxes"></div>
+                </div>
+                <div class="form-group">
+                    <label>Songs Practiced</label>
+                    <div id="song-checkboxes"></div>
+                </div>
+                <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea id="notes" rows="3"></textarea>
+                </div>
+                <button type="submit">Save Practice Session</button>
+            </form>
+        </div>
+
+        <div id="techniques-tab" class="tab-content">
+            <h2>Techniques</h2>
+            <div class="form-group">
+                <input type="text" id="new-technique" placeholder="Add new technique...">
+                <button id="add-technique-btn">Add</button>
+            </div>
+            <div id="techniques-list"></div>
+        </div>
+
+        <div id="songs-tab" class="tab-content">
+            <h2>Songs</h2>
+            <div class="form-group">
+                <input type="text" id="new-song" placeholder="Add new song...">
+                <button id="add-song-btn">Add</button>
+            </div>
+            <div id="songs-list"></div>
+        </div>
+
+        <div id="history-tab" class="tab-content">
+            <h2>Practice History</h2>
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Duration</th>
+                        <th>Techniques</th>
+                        <th>Songs</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- App Script -->
-    <script type="module" src="js/app.js"></script>
+    <script>
+        // Simple data store
+        let practiceData = {
+            sessions: [],
+            techniques: [
+                { id: 1, name: 'Scales', level: 0 },
+                { id: 2, name: 'Chords', level: 0 },
+                { id: 3, name: 'Fingerpicking', level: 0 }
+            ],
+            songs: [
+                { id: 1, name: 'Example Song 1', progress: 0 },
+                { id: 2, name: 'Example Song 2', progress: 0 }
+            ],
+            settings: {
+                levelUpMinutes: 60,
+                songCompletionMinutes: 120,
+                streakThreshold: 1
+            }
+        };
+
+        // Load data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('guitarPracticeData');
+            if (savedData) {
+                practiceData = JSON.parse(savedData);
+            }
+            
+            // Set today's date as default
+            document.getElementById('date').valueAsDate = new Date();
+            
+            renderApp();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('guitarPracticeData', JSON.stringify(practiceData));
+        }
+
+        // Calculate stats
+        function calculateStats() {
+            // Total practice time
+            const totalMinutes = practiceData.sessions.reduce((total, session) => 
+                total + Number(session.duration), 0);
+            document.getElementById('total-time').textContent = `${totalMinutes} minutes`;
+            
+            // Session count
+            document.getElementById('session-count').textContent = practiceData.sessions.length;
+            
+            // Current streak
+            const streak = calculateStreak();
+            document.getElementById('current-streak').textContent = `${streak} days`;
+        }
+
+        // Calculate streak
+        function calculateStreak() {
+            if (practiceData.sessions.length === 0) return 0;
+            
+            // Group sessions by date
+            const sessionsByDate = {};
+            practiceData.sessions.forEach(session => {
+                const date = new Date(session.date).toISOString().split('T')[0];
+                sessionsByDate[date] = (sessionsByDate[date] || 0) + Number(session.duration);
+            });
+            
+            // Get valid dates meeting threshold
+            const validDates = Object.entries(sessionsByDate)
+                .filter(([_, duration]) => duration >= practiceData.settings.streakThreshold)
+                .map(([date]) => date)
+                .sort()
+                .reverse();
+                
+            if (validDates.length === 0) return 0;
+            
+            // Check if practiced today or yesterday
+            const today = new Date().toISOString().split('T')[0];
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toISOString().split('T')[0];
+            
+            if (validDates[0] !== today && validDates[0] !== yesterdayStr) {
+                return 0; // Streak broken
+            }
+            
+            // Count consecutive days
+            let streak = 1;
+            for (let i = 0; i < validDates.length - 1; i++) {
+                const current = new Date(validDates[i]);
+                const next = new Date(validDates[i + 1]);
+                
+                const diffDays = Math.ceil(
+                    Math.abs(current - next) / (1000 * 60 * 60 * 24)
+                );
+                
+                if (diffDays === 1) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
+        // Render the entire app
+        function renderApp() {
+            renderTechniqueCheckboxes();
+            renderSongCheckboxes();
+            renderTechniquesList();
+            renderSongsList();
+            renderHistory();
+            calculateStats();
+        }
+
+        // Render technique checkboxes in the log form
+        function renderTechniqueCheckboxes() {
+            const container = document.getElementById('technique-checkboxes');
+            container.innerHTML = '';
+            
+            practiceData.techniques.forEach(tech => {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label>
+                        <input type="checkbox" data-tech-id="${tech.id}"> ${tech.name}
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            });
+        }
+
+        // Render song checkboxes in the log form
+        function renderSongCheckboxes() {
+            const container = document.getElementById('song-checkboxes');
+            container.innerHTML = '';
+            
+            practiceData.songs.forEach(song => {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label>
+                        <input type="checkbox" data-song-id="${song.id}"> ${song.name}
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            });
+        }
+
+        // Render techniques list
+        function renderTechniquesList() {
+            const container = document.getElementById('techniques-list');
+            container.innerHTML = '';
+            
+            practiceData.techniques.forEach(tech => {
+                const techEl = document.createElement('div');
+                techEl.className = 'technique-item';
+                techEl.innerHTML = `
+                    <div class="flex-between">
+                        <span>${tech.name}</span>
+                        <span>Level: ${tech.level.toFixed(1)}/10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${(tech.level / 10) * 100}%"></div>
+                    </div>
+                `;
+                container.appendChild(techEl);
+            });
+        }
+
+        // Render songs list
+        function renderSongsList() {
+            const container = document.getElementById('songs-list');
+            container.innerHTML = '';
+            
+            practiceData.songs.forEach(song => {
+                const songEl = document.createElement('div');
+                songEl.className = 'song-item';
+                songEl.innerHTML = `
+                    <div class="flex-between">
+                        <span>${song.name}</span>
+                        <span>${song.progress.toFixed(1)}% Complete</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${song.progress}%"></div>
+                    </div>
+                `;
+                container.appendChild(songEl);
+            });
+        }
+
+        // Render practice history
+        function renderHistory() {
+            const historyBody = document.getElementById('history-body');
+            historyBody.innerHTML = '';
+            
+            [...practiceData.sessions].reverse().forEach(session => {
+                const row = document.createElement('tr');
+                
+                // Get technique names
+                const techNames = session.techniques.map(techId => {
+                    const tech = practiceData.techniques.find(t => t.id === techId);
+                    return tech ? tech.name : '';
+                }).join(', ');
+                
+                // Get song names
+                const songNames = session.songs.map(songId => {
+                    const song = practiceData.songs.find(s => s.id === songId);
+                    return song ? song.name : '';
+                }).join(', ');
+                
+                row.innerHTML = `
+                    <td>${session.date}</td>
+                    <td>${session.duration} minutes</td>
+                    <td>${techNames}</td>
+                    <td>${songNames}</td>
+                    <td>
+                        <button class="delete-btn" data-session-id="${session.id}">Delete</button>
+                    </td>
+                `;
+                historyBody.appendChild(row);
+            });
+            
+            // Add delete event listeners
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const sessionId = Number(this.getAttribute('data-session-id'));
+                    deleteSession(sessionId);
+                });
+            });
+        }
+
+        // Add new technique
+        function addTechnique() {
+            const input = document.getElementById('new-technique');
+            const techniqueName = input.value.trim();
+            
+            if (techniqueName) {
+                practiceData.techniques.push({
+                    id: Date.now(),
+                    name: techniqueName,
+                    level: 0
+                });
+                
+                input.value = '';
+                saveData();
+                renderApp();
+            }
+        }
+
+        // Add new song
+        function addSong() {
+            const input = document.getElementById('new-song');
+            const songName = input.value.trim();
+            
+            if (songName) {
+                practiceData.songs.push({
+                    id: Date.now(),
+                    name: songName,
+                    progress: 0
+                });
+                
+                input.value = '';
+                saveData();
+                renderApp();
+            }
+        }
+
+        // Save practice session
+        function savePracticeSession(e) {
+            e.preventDefault();
+            
+            const date = document.getElementById('date').value;
+            const duration = Number(document.getElementById('duration').value);
+            const notes = document.getElementById('notes').value;
+            
+            // Get selected techniques
+            const techniques = [];
+            document.querySelectorAll('#technique-checkboxes input:checked').forEach(checkbox => {
+                techniques.push(Number(checkbox.getAttribute('data-tech-id')));
+            });
+            
+            // Get selected songs
+            const songs = [];
+            document.querySelectorAll('#song-checkboxes input:checked').forEach(checkbox => {
+                songs.push(Number(checkbox.getAttribute('data-song-id')));
+            });
+            
+            // Create new session
+            const newSession = {
+                id: Date.now(),
+                date,
+                duration,
+                techniques,
+                songs,
+                notes
+            };
+            
+            // Add to sessions
+            practiceData.sessions.push(newSession);
+            
+            // Update technique levels
+            practiceData.techniques = practiceData.techniques.map(tech => {
+                if (techniques.includes(tech.id)) {
+                    const levelIncrease = duration / practiceData.settings.levelUpMinutes;
+                    return { 
+                        ...tech, 
+                        level: Math.min(tech.level + levelIncrease, 10) 
+                    };
+                }
+                return tech;
+            });
+            
+            // Update song progress
+            practiceData.songs = practiceData.songs.map(song => {
+                if (songs.includes(song.id)) {
+                    const progressIncrease = (duration / practiceData.settings.songCompletionMinutes) * 100;
+                    return { 
+                        ...song, 
+                        progress: Math.min(song.progress + progressIncrease, 100) 
+                    };
+                }
+                return song;
+            });
+            
+            // Reset form
+            document.getElementById('duration').value = '30';
+            document.getElementById('notes').value = '';
+            document.querySelectorAll('#technique-checkboxes input').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.querySelectorAll('#song-checkboxes input').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            saveData();
+            renderApp();
+        }
+
+        // Delete session
+        function deleteSession(sessionId) {
+            const session = practiceData.sessions.find(s => s.id === sessionId);
+            
+            if (session) {
+                // Reverse technique level increases
+                practiceData.techniques = practiceData.techniques.map(tech => {
+                    if (session.techniques.includes(tech.id)) {
+                        const levelDecrease = session.duration / practiceData.settings.levelUpMinutes;
+                        return {
+                            ...tech,
+                            level: Math.max(0, tech.level - levelDecrease)
+                        };
+                    }
+                    return tech;
+                });
+                
+                // Reverse song progress
+                practiceData.songs = practiceData.songs.map(song => {
+                    if (session.songs.includes(song.id)) {
+                        const progressDecrease = (session.duration / practiceData.settings.songCompletionMinutes) * 100;
+                        return {
+                            ...song,
+                            progress: Math.max(0, song.progress - progressDecrease)
+                        };
+                    }
+                    return song;
+                });
+                
+                // Remove session
+                practiceData.sessions = practiceData.sessions.filter(s => s.id !== sessionId);
+                
+                saveData();
+                renderApp();
+            }
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Update active tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update visible content
+                const tabName = this.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+            });
+        });
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            
+            // Form submission
+            document.getElementById('practice-form').addEventListener('submit', savePracticeSession);
+            
+            // Add technique button
+            document.getElementById('add-technique-btn').addEventListener('click', addTechnique);
+            
+            // Add song button
+            document.getElementById('add-song-btn').addEventListener('click', addSong);
+        });
+    </script>
 </body>
 </html>
