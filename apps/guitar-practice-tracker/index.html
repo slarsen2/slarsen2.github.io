@@ -145,7 +145,28 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.settings-group {
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+.help-text {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 3px;
+}
+
+.data-management-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
     </style>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
 </head>
 <body>
     <div class="container">
@@ -173,6 +194,8 @@
             <div class="tab" data-tab="techniques">Techniques</div>
             <div class="tab" data-tab="songs">Songs</div>
             <div class="tab" data-tab="history">History</div>
+            <div class="tab" data-tab="reports">Reports</div>
+            <div class="tab" data-tab="settings">Settings</div>
         </div>
 
         <div id="log-tab" class="tab-content active">
@@ -245,6 +268,62 @@
             </table>
         </div>
     </div>
+    
+    <div id="reports-tab" class="tab-content">
+    <h2>Practice Reports</h2>
+    <div class="chart-container" style="position: relative; height:50vh; width:100%">
+        <canvas id="weekly-chart"></canvas>
+    </div>
+    <div class="chart-container" style="position: relative; height:50vh; width:100%; margin-top: 30px;">
+        <canvas id="technique-chart"></canvas>
+    </div>
+</div>
+
+<div id="settings-tab" class="tab-content">
+    <h2>Settings</h2>
+    
+    <div class="settings-group">
+        <h3>Progress Requirements</h3>
+        <div class="form-group">
+            <label for="level-up-minutes">Minutes to Level Up a Technique</label>
+            <input type="number" id="level-up-minutes" min="1" value="60">
+            <p class="help-text">Time required to advance a technique by 1 level (max 10)</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="song-completion-minutes">Minutes to Complete a Song</label>
+            <input type="number" id="song-completion-minutes" min="1" value="120">
+            <p class="help-text">Time required to reach 100% completion on a song</p>
+        </div>
+    </div>
+    
+    <div class="settings-group">
+        <h3>Goals & Streaks</h3>
+        <div class="form-group">
+            <label for="streak-threshold">Minimum Minutes for Streak</label>
+            <input type="number" id="streak-threshold" min="1" value="1">
+            <p class="help-text">Minimum practice time for a day to count toward your streak</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="weekly-goal">Weekly Practice Goal (minutes)</label>
+            <input type="number" id="weekly-goal" min="1" value="210">
+            <p class="help-text">Your target practice time each week</p>
+        </div>
+    </div>
+    
+    <button id="save-settings-btn">Save Settings</button>
+</div>
+
+<div class="settings-group">
+    <h3>Data Management</h3>
+    <p>Back up your practice data or restore from a previous backup:</p>
+    <div class="data-management-buttons">
+        <button id="export-data-btn">Export Data</button>
+        <button id="import-data-btn">Import Data</button>
+    </div>
+    <input type="file" id="import-file" style="display: none;" accept=".json">
+</div>
 
     <script>
         // Simple data store
@@ -628,38 +707,7 @@ let timer = {
                 renderApp();
             }
         }
-
-        // Tab switching
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                // Update active tab
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Update visible content
-                const tabName = this.getAttribute('data-tab');
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                document.getElementById(`${tabName}-tab`).classList.add('active');
-            });
-        });
-
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            setupTimer();
-            
-            // Form submission
-            document.getElementById('practice-form').addEventListener('submit', savePracticeSession);
-            
-            // Add technique button
-            document.getElementById('add-technique-btn').addEventListener('click', addTechnique);
-            
-            // Add song button
-            document.getElementById('add-song-btn').addEventListener('click', addSong);
-            
-            // Timer functionality
+// Timer functionality
 
 
 function setupTimer() {
@@ -712,7 +760,278 @@ function stopTimer() {
   timer.display.textContent = '00:00:00';
   timer.stopBtn.disabled = true;
 }
+
+function renderReports() {
+    // Weekly practice chart
+    renderWeeklyChart();
+    
+    // Technique distribution chart
+    renderTechniqueChart();
+}
+
+function renderWeeklyChart() {
+    const ctx = document.getElementById('weekly-chart');
+    
+    // Get last 4 weeks of data
+    const now = new Date();
+    const fourWeeksAgo = new Date();
+    fourWeeksAgo.setDate(now.getDate() - 28);
+    
+    // Create an array of the last 4 weeks
+    const weeks = [];
+    for (let i = 0; i < 4; i++) {
+        const startDate = new Date(fourWeeksAgo);
+        startDate.setDate(startDate.getDate() + (i * 7));
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 6);
+        weeks.push({
+            start: startDate,
+            end: endDate,
+            label: `Week ${i+1}`,
+            minutes: 0
         });
+    }
+    
+    function loadSettings() {
+    // Load settings from practiceData
+    document.getElementById('level-up-minutes').value = practiceData.settings.levelUpMinutes;
+    document.getElementById('song-completion-minutes').value = practiceData.settings.songCompletionMinutes;
+    document.getElementById('streak-threshold').value = practiceData.settings.streakThreshold;
+    document.getElementById('weekly-goal').value = practiceData.settings.goalMinutesPerWeek || 210;
+    
+    // Add settings to practiceData if it doesn't exist
+    if (!practiceData.settings.goalMinutesPerWeek) {
+        practiceData.settings.goalMinutesPerWeek = 210;
+    }
+}
+
+function saveSettings() {
+    practiceData.settings.levelUpMinutes = Number(document.getElementById('level-up-minutes').value);
+    practiceData.settings.songCompletionMinutes = Number(document.getElementById('song-completion-minutes').value);
+    practiceData.settings.streakThreshold = Number(document.getElementById('streak-threshold').value);
+    practiceData.settings.goalMinutesPerWeek = Number(document.getElementById('weekly-goal').value);
+    
+    saveData();
+    alert('Settings saved!');
+    
+    // Recalculate stats since streak threshold might have changed
+    calculateStats();
+}
+    
+    
+    // Fill in the minutes practiced each week
+    practiceData.sessions.forEach(session => {
+        const sessionDate = new Date(session.date);
+        if (sessionDate >= fourWeeksAgo) {
+            for (const week of weeks) {
+                if (sessionDate >= week.start && sessionDate <= week.end) {
+                    week.minutes += Number(session.duration);
+                    break;
+                }
+            }
+        }
+    });
+    
+    // Create the chart
+    if (window.weeklyChart) {
+        window.weeklyChart.destroy();
+    }
+    
+    window.weeklyChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: weeks.map(w => w.label),
+            datasets: [{
+                label: 'Minutes Practiced',
+                data: weeks.map(w => w.minutes),
+                backgroundColor: 'rgba(57, 73, 171, 0.7)',
+                borderColor: 'rgba(57, 73, 171, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Weekly Practice Time'
+                },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Minutes'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function renderTechniqueChart() {
+    const ctx = document.getElementById('technique-chart');
+    
+    // Count sessions with each technique
+    const techniqueData = {};
+    practiceData.techniques.forEach(tech => {
+        techniqueData[tech.id] = {
+            name: tech.name,
+            count: 0
+        };
+    });
+    
+    practiceData.sessions.forEach(session => {
+        session.techniques.forEach(techId => {
+            if (techniqueData[techId]) {
+                techniqueData[techId].count++;
+            }
+        });
+    });
+    
+    // Create the chart
+    if (window.techniqueChart) {
+        window.techniqueChart.destroy();
+    }
+    
+    window.techniqueChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: Object.values(techniqueData).map(t => t.name),
+            datasets: [{
+                data: Object.values(techniqueData).map(t => t.count),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)',
+                    'rgba(255, 159, 64, 0.7)',
+                    'rgba(199, 199, 199, 0.7)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Technique Practice Distribution'
+                },
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+}
+
+function exportData() {
+    // Create a JSON string of the data
+    const dataStr = JSON.stringify(practiceData);
+    
+    // Create a download link
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const exportFileName = 'guitar_practice_data_' + new Date().toISOString().split('T')[0] + '.json';
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileName);
+    linkElement.style.display = 'none';
+    
+    document.body.appendChild(linkElement);
+    linkElement.click();
+    document.body.removeChild(linkElement);
+}
+
+function importData() {
+    document.getElementById('import-file').click();
+}
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                
+                // Validate data structure
+                if (importedData.sessions && importedData.techniques && importedData.songs && importedData.settings) {
+                    // Confirm before overwriting
+                    if (confirm('This will replace your current practice data. Continue?')) {
+                        practiceData = importedData;
+                        saveData();
+                        renderApp();
+                        alert('Data imported successfully!');
+                    }
+                } else {
+                    alert('Invalid data format. Import failed.');
+                }
+            } catch (error) {
+                alert('Error importing data: ' + error.message);
+            }
+        };
+        
+        reader.readAsText(file);
+    }
+}
+// Place the event listener at the end of your script section
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    setupTimer();
+    
+    // Form submission
+    document.getElementById('practice-form').addEventListener('submit', savePracticeSession);
+    
+    // Add technique button
+    document.getElementById('add-technique-btn').addEventListener('click', addTechnique);
+    
+    // Add song button
+    document.getElementById('add-song-btn').addEventListener('click', addSong);
+    
+    // Settings save button
+    document.getElementById('save-settings-btn').addEventListener('click', saveSettings);
+    
+    // Data export/import
+    document.getElementById('export-data-btn').addEventListener('click', exportData);
+    document.getElementById('import-data-btn').addEventListener('click', importData);
+    document.getElementById('import-file').addEventListener('change', handleFileSelect);
+    
+    // Load settings
+    loadSettings();
+    
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update visible content
+            const tabName = this.getAttribute('data-tab');
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Render reports if reports tab is selected
+            if (tabName === 'reports') {
+                renderReports();
+            }
+        });
+    });
+    
+    // Initialize reports tab if selected
+    if (document.querySelector('.tab.active').getAttribute('data-tab') === 'reports') {
+        renderReports();
+    }
+});
+
     </script>
 </body>
 </html>
