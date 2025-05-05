@@ -253,6 +253,27 @@
     display: none;
 }
 
+.delete-item-btn {
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.delete-item-btn:hover {
+    background: #d32f2f;
+}
+
+.song-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 
 
     </style>
@@ -263,7 +284,7 @@
 <body>
 
 <div id="login-screen" class="login-container">
-    <h2>Guitar Practice Tracker</h2>
+    <h2>Guitar Practice Tracker V1</h2>
     <p>Select a user or create a new one:</p>
     
     <div id="user-list" class="user-list">
@@ -811,6 +832,14 @@ function getTimeAllocations() {
                 `;
                 container.appendChild(songEl);
             });
+            
+            // Add event listeners to delete buttons
+    document.querySelectorAll('#songs-list .delete-item-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const songId = Number(this.getAttribute('data-song-id'));
+            deleteSong(songId);
+        });
+    });
         }
 
         // Render practice history
@@ -874,40 +903,175 @@ function getTimeAllocations() {
 
 
         // Add new technique
-        function addTechnique() {
-            const input = document.getElementById('new-technique');
-            const techniqueName = input.value.trim();
-            
-            if (techniqueName) {
-                practiceData.techniques.push({
-                    id: Date.now(),
-                    name: techniqueName,
-                    level: 0
-                });
-                
-                input.value = '';
-                saveUserData();
-                renderApp();
-            }
+       function addTechnique() {
+    const input = document.getElementById('new-technique');
+    const techniqueName = input.value.trim();
+    
+    if (techniqueName) {
+        // Check if this technique name already exists (case-insensitive)
+        const exists = practiceData.techniques.some(tech => 
+            tech.name.toLowerCase() === techniqueName.toLowerCase()
+        );
+        
+        if (exists) {
+            alert(`A technique named "${techniqueName}" already exists!`);
+            return;
         }
+        
+        // Add the new technique
+        practiceData.techniques.push({
+            id: Date.now(), // Use timestamp as unique ID
+            name: techniqueName,
+            level: 0
+        });
+        
+        // Clear input field
+        input.value = '';
+        
+        // Save and update UI
+        saveUserData();
+        renderApp();
+    } else {
+        alert('Please enter a technique name');
+    }
+}
 
         // Add new song
-        function addSong() {
-            const input = document.getElementById('new-song');
-            const songName = input.value.trim();
-            
-            if (songName) {
-                practiceData.songs.push({
-                    id: Date.now(),
-                    name: songName,
-                    progress: 0
-                });
-                
-                input.value = '';
-                saveUserData();
-                renderApp();
-            }
+       function addSong() {
+    const input = document.getElementById('new-song');
+    const songName = input.value.trim();
+    
+    if (songName) {
+        // Check if this song name already exists (case-insensitive)
+        const exists = practiceData.songs.some(song => 
+            song.name.toLowerCase() === songName.toLowerCase()
+        );
+        
+        if (exists) {
+            alert(`A song named "${songName}" already exists!`);
+            return;
         }
+        
+        // Add the new song
+        practiceData.songs.push({
+            id: Date.now(), // Use timestamp as unique ID
+            name: songName,
+            progress: 0
+        });
+        
+        // Clear input field
+        input.value = '';
+        
+        // Save and update UI
+        saveUserData();
+        renderApp();
+    } else {
+        alert('Please enter a song name');
+    }
+}
+        
+        function deleteSong(songId) {
+    // Check if song exists
+    const songIndex = practiceData.songs.findIndex(s => s.id === songId);
+    if (songIndex === -1) return;
+    
+    const songName = practiceData.songs[songIndex].name;
+    
+    // Ask for confirmation
+    if (!confirm(`Are you sure you want to delete "${songName}"? This will remove all progress data for this song.`)) {
+        return;
+    }
+    
+    // Remove the song
+    practiceData.songs.splice(songIndex, 1);
+    
+    // Remove song from any sessions
+    practiceData.sessions = practiceData.sessions.map(session => {
+        // Remove song from songs array
+        session.songs = session.songs.filter(id => id !== songId);
+        
+        // Remove song from timeAllocations if present
+        if (session.timeAllocations) {
+            session.timeAllocations = session.timeAllocations.filter(
+                alloc => !(alloc.type === 'song' && alloc.id === songId)
+            );
+        }
+        
+        return session;
+    });
+    
+    // Save and update UI
+    saveUserData();
+    renderApp();
+}
+
+function renderTechniquesList() {
+    const container = document.getElementById('techniques-list');
+    container.innerHTML = '';
+    
+    practiceData.techniques.forEach(tech => {
+        const techEl = document.createElement('div');
+        techEl.className = 'technique-item';
+        techEl.innerHTML = `
+            <div class="song-list-item">
+                <div>
+                    <span>${tech.name}</span>
+                    <span>Level: ${tech.level.toFixed(1)}/10</span>
+                </div>
+                <button class="delete-item-btn" data-tech-id="${tech.id}">Delete</button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: ${(tech.level / 10) * 100}%"></div>
+            </div>
+        `;
+        container.appendChild(techEl);
+    });
+    
+    // Add event listeners to delete buttons
+    document.querySelectorAll('#techniques-list .delete-item-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const techId = Number(this.getAttribute('data-tech-id'));
+            deleteTechnique(techId);
+        });
+    });
+}
+
+function deleteTechnique(techId) {
+    // Check if technique exists
+    const techIndex = practiceData.techniques.findIndex(t => t.id === techId);
+    if (techIndex === -1) return;
+    
+    const techName = practiceData.techniques[techIndex].name;
+    
+    // Ask for confirmation
+    if (!confirm(`Are you sure you want to delete "${techName}"? This will remove all progress data for this technique.`)) {
+        return;
+    }
+    
+    // Remove the technique
+    practiceData.techniques.splice(techIndex, 1);
+    
+    // Remove technique from any sessions
+    practiceData.sessions = practiceData.sessions.map(session => {
+        // Remove technique from techniques array
+        session.techniques = session.techniques.filter(id => id !== techId);
+        
+        // Remove technique from timeAllocations if present
+        if (session.timeAllocations) {
+            session.timeAllocations = session.timeAllocations.filter(
+                alloc => !(alloc.type === 'technique' && alloc.id === techId)
+            );
+        }
+        
+        return session;
+    });
+    
+    // Save and update UI
+    saveUserData();
+    renderApp();
+}
+        
+        
 
         // Save practice session
         function savePracticeSession(e) {
