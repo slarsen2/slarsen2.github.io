@@ -163,15 +163,85 @@
     gap: 10px;
     margin-top: 10px;
 }
+
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+.user-list {
+    margin: 20px 0;
+    text-align: left;
+}
+.user-item {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #f9f9f9;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.user-item:hover {
+    background: #f0f4ff;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+.user-controls {
+    display: flex;
+    align-items: center;
+}
+.current-user {
+    margin-right: 10px;
+    font-weight: bold;
+}
+.logout-btn {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
     </style>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
 </head>
 <body>
+
+<div id="login-screen" class="login-container">
+    <h2>Guitar Practice Tracker</h2>
+    <p>Select a user or create a new one:</p>
+    
+    <div id="user-list" class="user-list">
+        <!-- User list will be populated here -->
+    </div>
+    
+    <div class="form-group">
+        <input type="text" id="new-user" placeholder="New user name">
+        <button id="create-user-btn">Create New User</button>
+    </div>
+</div>
+
+
     <div class="container">
         <header>
             <h1>Badass Guitar Practice Tracker</h1>
+            <div class="navbar">
+        <div class="user-controls">
+            <span class="current-user" id="current-user-display"></span>
+            <button class="logout-btn" id="logout-btn">Logout</button>
+        </div>
+    </div>
         </header>
 
         <div class="stats">
@@ -371,7 +441,7 @@ let timer = {
         }
 
         // Save data to localStorage
-        function saveData() {
+        function saveUserData() {
             localStorage.setItem('guitarPracticeData', JSON.stringify(practiceData));
         }
 
@@ -578,7 +648,7 @@ let timer = {
                 });
                 
                 input.value = '';
-                saveData();
+                saveUserData();
                 renderApp();
             }
         }
@@ -596,7 +666,7 @@ let timer = {
                 });
                 
                 input.value = '';
-                saveData();
+                saveUserData();
                 renderApp();
             }
         }
@@ -668,7 +738,7 @@ let timer = {
                 checkbox.checked = false;
             });
             
-            saveData();
+            saveUserData();
             renderApp();
         }
 
@@ -704,7 +774,7 @@ let timer = {
                 // Remove session
                 practiceData.sessions = practiceData.sessions.filter(s => s.id !== sessionId);
                 
-                saveData();
+                saveUserData();
                 renderApp();
             }
         }
@@ -865,7 +935,7 @@ function saveSettings() {
     practiceData.settings.streakThreshold = Number(document.getElementById('streak-threshold').value);
     practiceData.settings.goalMinutesPerWeek = Number(document.getElementById('weekly-goal').value);
     
-    saveData();
+    saveUserData();
     alert('Settings saved!');
     
     // Recalculate stats since streak threshold might have changed
@@ -969,7 +1039,7 @@ function handleFileSelect(event) {
                     // Confirm before overwriting
                     if (confirm('This will replace your current practice data. Continue?')) {
                         practiceData = importedData;
-                        saveData();
+                        saveUserData();
                         renderApp();
                         alert('Data imported successfully!');
                     }
@@ -984,9 +1054,150 @@ function handleFileSelect(event) {
         reader.readAsText(file);
     }
 }
+
+// Add these user management functions before your event listener
+// User management
+let users = [];
+let currentUser = null;
+
+function initUserSystem() {
+    // Load users list
+    const savedUsers = localStorage.getItem('guitarPracticeUsers');
+    if (savedUsers) {
+        users = JSON.parse(savedUsers);
+    }
+    
+    // Show/hide appropriate screens
+    if (currentUser) {
+        showApp();
+    } else {
+        showLoginScreen();
+    }
+}
+
+function showLoginScreen() {
+    document.getElementById('login-screen').style.display = 'block';
+    document.querySelector('.container').style.display = 'none';
+    
+    renderUserList();
+}
+
+function showApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.querySelector('.container').style.display = 'block';
+    
+    // Update user display
+    document.getElementById('current-user-display').textContent = currentUser;
+    
+    // Load the current user's data
+    loadUserData();
+    
+    // Render the app with the loaded data
+    renderApp();
+}
+
+function renderUserList() {
+    const userListElement = document.getElementById('user-list');
+    userListElement.innerHTML = '';
+    
+    if (users.length === 0) {
+        userListElement.innerHTML = '<p>No users yet. Create a new one below.</p>';
+        return;
+    }
+    
+    users.forEach(user => {
+        const userItem = document.createElement('div');
+        userItem.className = 'user-item';
+        userItem.textContent = user;
+        userItem.addEventListener('click', () => selectUser(user));
+        userListElement.appendChild(userItem);
+    });
+}
+
+function createUser() {
+    const newUserInput = document.getElementById('new-user');
+    const userName = newUserInput.value.trim();
+    
+    if (!userName) {
+        alert('Please enter a user name');
+        return;
+    }
+    
+    if (users.includes(userName)) {
+        alert('This user already exists. Please choose another name.');
+        return;
+    }
+    
+    // Add user to list
+    users.push(userName);
+    localStorage.setItem('guitarPracticeUsers', JSON.stringify(users));
+    
+    // Clear input
+    newUserInput.value = '';
+    
+    // Select the new user
+    selectUser(userName);
+}
+
+function selectUser(user) {
+    currentUser = user;
+    showApp();
+}
+
+function logout() {
+    currentUser = null;
+    showLoginScreen();
+}
+
+// Replace loadData and saveData with user-specific versions
+function loadUserData() {
+    const savedData = localStorage.getItem(`guitarPractice_${currentUser}`);
+    if (savedData) {
+        practiceData = JSON.parse(savedData);
+    } else {
+        // Reset to default for new user
+        practiceData = {
+            sessions: [],
+            techniques: [
+                { id: 1, name: 'Scales', level: 0 },
+                { id: 2, name: 'Chords', level: 0 },
+                { id: 3, name: 'Fingerpicking', level: 0 }
+            ],
+            songs: [
+                { id: 1, name: 'Example Song 1', progress: 0 },
+                { id: 2, name: 'Example Song 2', progress: 0 }
+            ],
+            settings: {
+                levelUpMinutes: 60,
+                songCompletionMinutes: 120,
+                streakThreshold: 1,
+                goalMinutesPerWeek: 210
+            }
+        };
+    }
+    
+    // Set today's date as default
+    document.getElementById('date').valueAsDate = new Date();
+}
+
+function saveUserData() {
+    localStorage.setItem(`guitarPractice_${currentUser}`, JSON.stringify(practiceData));
+}
+
+
 // Place the event listener at the end of your script section
 document.addEventListener('DOMContentLoaded', () => {
-    loadData();
+    
+      // Initialize user system first
+    initUserSystem();
+    
+    // Create user button
+    document.getElementById('create-user-btn').addEventListener('click', createUser);
+    
+    // Logout button
+    document.getElementById('logout-btn').addEventListener('click', logout);
+    
+    // Setup the rest of the app
     setupTimer();
     
     // Form submission
