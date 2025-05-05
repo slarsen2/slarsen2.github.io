@@ -313,7 +313,7 @@
     </div>
     
     <button id="save-settings-btn">Save Settings</button>
-</div>
+
 
 <div class="settings-group">
     <h3>Data Management</h3>
@@ -323,6 +323,7 @@
         <button id="import-data-btn">Import Data</button>
     </div>
     <input type="file" id="import-file" style="display: none;" accept=".json">
+</div>
 </div>
 
     <script>
@@ -792,32 +793,7 @@ function renderWeeklyChart() {
         });
     }
     
-    function loadSettings() {
-    // Load settings from practiceData
-    document.getElementById('level-up-minutes').value = practiceData.settings.levelUpMinutes;
-    document.getElementById('song-completion-minutes').value = practiceData.settings.songCompletionMinutes;
-    document.getElementById('streak-threshold').value = practiceData.settings.streakThreshold;
-    document.getElementById('weekly-goal').value = practiceData.settings.goalMinutesPerWeek || 210;
-    
-    // Add settings to practiceData if it doesn't exist
-    if (!practiceData.settings.goalMinutesPerWeek) {
-        practiceData.settings.goalMinutesPerWeek = 210;
-    }
-}
-
-function saveSettings() {
-    practiceData.settings.levelUpMinutes = Number(document.getElementById('level-up-minutes').value);
-    practiceData.settings.songCompletionMinutes = Number(document.getElementById('song-completion-minutes').value);
-    practiceData.settings.streakThreshold = Number(document.getElementById('streak-threshold').value);
-    practiceData.settings.goalMinutesPerWeek = Number(document.getElementById('weekly-goal').value);
-    
-    saveData();
-    alert('Settings saved!');
-    
-    // Recalculate stats since streak threshold might have changed
-    calculateStats();
-}
-    
+   
     
     // Fill in the minutes practiced each week
     practiceData.sessions.forEach(session => {
@@ -869,6 +845,34 @@ function saveSettings() {
         }
     });
 }
+
+ function loadSettings() {
+    // Load settings from practiceData
+    document.getElementById('level-up-minutes').value = practiceData.settings.levelUpMinutes;
+    document.getElementById('song-completion-minutes').value = practiceData.settings.songCompletionMinutes;
+    document.getElementById('streak-threshold').value = practiceData.settings.streakThreshold;
+    document.getElementById('weekly-goal').value = practiceData.settings.goalMinutesPerWeek || 210;
+    
+    // Add settings to practiceData if it doesn't exist
+    if (!practiceData.settings.goalMinutesPerWeek) {
+        practiceData.settings.goalMinutesPerWeek = 210;
+    }
+}
+
+function saveSettings() {
+    practiceData.settings.levelUpMinutes = Number(document.getElementById('level-up-minutes').value);
+    practiceData.settings.songCompletionMinutes = Number(document.getElementById('song-completion-minutes').value);
+    practiceData.settings.streakThreshold = Number(document.getElementById('streak-threshold').value);
+    practiceData.settings.goalMinutesPerWeek = Number(document.getElementById('weekly-goal').value);
+    
+    saveData();
+    alert('Settings saved!');
+    
+    // Recalculate stats since streak threshold might have changed
+    calculateStats();
+}
+    
+
 
 function renderTechniqueChart() {
     const ctx = document.getElementById('technique-chart');
