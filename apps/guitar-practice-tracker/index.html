@@ -5,498 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Badass Guitar Practice Tracker!</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        h1, h2, h3 {
-            color: #3949ab;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="text"], 
-        input[type="number"],
-        input[type="date"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #3949ab;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #303f9f;
-        }
-        .stats {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        .stat-card {
-            background: #f0f4ff;
-            padding: 15px;
-            border-radius: 8px;
-            flex: 1;
-            text-align: center;
-        }
-        .sessions {
+        /* Include your existing styles here */
+        
+        /* New styles for the time partitioning feature */
+        .time-allocation-container {
             margin-top: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table th, table td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-        .tab {
-            padding: 10px 15px;
-            cursor: pointer;
-        }
-        .tab.active {
-            border-bottom: 2px solid #3949ab;
-            font-weight: bold;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .technique-item, .song-item {
-            background: #f9f9f9;
             padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-        }
-        .progress-bar {
-            height: 10px;
-            background: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-        .progress-fill {
-            height: 100%;
-            background: #3949ab;
-        }
-        .delete-btn {
-            background: #f44336;
-            padding: 5px 10px;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .delete-btn:hover {
-            background: #d32f2f;
-        }
-        .timer-btn {
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            margin-right: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .timer-btn:hover {
-            opacity: 0.9;
-        }
-        .timer-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .settings-group {
-            margin-bottom: 25px;
-            padding: 15px;
-            background-color: #f9f9f9;
+            background-color: #f5f5f5;
             border-radius: 8px;
-        }
-        .help-text {
-            font-size: 0.85rem;
-            color: #666;
-            margin-top: 3px;
-        }
-
-        .data-management-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .login-container {
-            max-width: 400px;
-            margin: 100px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .user-list {
-            margin: 20px 0;
-            text-align: left;
-        }
-        .user-item {
-            padding: 10px;
-            margin-bottom: 8px;
-            background: #f9f9f9;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .user-item:hover {
-            background: #f0f4ff;
-        }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            margin-bottom: 20px;
-        }
-        .user-controls {
-            display: flex;
-            align-items: center;
-        }
-        .current-user {
-            margin-right: 10px;
-            font-weight: bold;
-        }
-        .logout-btn {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
         }
         
-        /* New styles for time distribution feature */
-        .time-distribution {
-            background: #f0f4ff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .time-distribution h3 {
-            margin-top: 0;
-        }
         .slider-container {
             margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
         }
+        
         .slider-label {
             display: flex;
             justify-content: space-between;
             margin-bottom: 5px;
         }
+        
         .slider-label span:last-child {
             font-weight: bold;
         }
-        input[type="range"] {
+        
+        .time-slider {
             width: 100%;
-            margin: 5px 0;
+            margin-top: 5px;
         }
-        .time-total {
-            text-align: right;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .time-warning {
-            color: #f44336;
-            text-align: center;
-            margin-top: 10px;
+        
+        .time-allocation-summary {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e0e7ff;
+            border-radius: 4px;
             font-weight: bold;
         }
         
-        /* Styles for report filter controls */
-        .report-controls {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f0f4ff;
-            border-radius: 8px;
-        }
-        .report-period {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        .period-btn {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .period-btn.active {
-            background: #3949ab;
-            color: white;
-            border-color: #3949ab;
-        }
-        .activity-details {
-            margin-top: 30px;
-        }
-        .activity-chart-container {
-            margin-top: 20px;
-            height: 300px;
+        .allocation-warning {
+            color: #f44336;
+            font-weight: bold;
+            display: none;
         }
     </style>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
 </head>
 <body>
-
-<div id="login-screen" class="login-container">
-    <h2>Guitar Practice Tracker</h2>
-    <p>Select a user or create a new one:</p>
+    <!-- Your existing HTML here... -->
     
-    <div id="user-list" class="user-list">
-        <!-- User list will be populated here -->
-    </div>
-    
-    <div class="form-group">
-        <input type="text" id="new-user" placeholder="New user name">
-        <button id="create-user-btn">Create New User</button>
-    </div>
-</div>
-
-
-    <div class="container">
-        <header>
-            <h1>Badass Guitar Practice Tracker</h1>
-            <div class="navbar">
-        <div class="user-controls">
-            <span class="current-user" id="current-user-display"></span>
-            <button class="logout-btn" id="logout-btn">Logout</button>
-        </div>
-    </div>
-        </header>
-
-        <div class="stats">
-            <div class="stat-card">
-                <h3>Total Practice</h3>
-                <p id="total-time">0 minutes</p>
-            </div>
-            <div class="stat-card">
-                <h3>Sessions</h3>
-                <p id="session-count">0</p>
-            </div>
-            <div class="stat-card">
-                <h3>Current Streak</h3>
-                <p id="current-streak">0 days</p>
+    <!-- Modification to the log-tab section -->
+    <div id="log-tab" class="tab-content active">
+        <h2>Log Practice Session</h2>
+        <div class="timer-container" style="margin-bottom: 20px; padding: 15px; background-color: #f5f5f5; border-radius: 8px;">
+            <h3>Practice Timer</h3>
+            <div class="timer-display" style="font-size: 2rem; font-weight: bold; margin: 10px 0;">00:00:00</div>
+            <div class="timer-controls">
+                <button id="start-timer" class="timer-btn" style="background-color: #4caf50;">Start</button>
+                <button id="pause-timer" class="timer-btn" style="background-color: #ff9800;" disabled>Pause</button>
+                <button id="stop-timer" class="timer-btn" style="background-color: #f44336;" disabled>Stop</button>
             </div>
         </div>
-
-        <div class="tabs">
-            <div class="tab active" data-tab="log">Log Practice</div>
-            <div class="tab" data-tab="techniques">Techniques</div>
-            <div class="tab" data-tab="songs">Songs</div>
-            <div class="tab" data-tab="history">History</div>
-            <div class="tab" data-tab="reports">Reports</div>
-            <div class="tab" data-tab="settings">Settings</div>
-        </div>
-
-        <div id="log-tab" class="tab-content active">
-            <h2>Log Practice Session</h2>
-            <div class="timer-container" style="margin-bottom: 20px; padding: 15px; background-color: #f5f5f5; border-radius: 8px;">
-  <h3>Practice Timer</h3>
-  <div class="timer-display" style="font-size: 2rem; font-weight: bold; margin: 10px 0;">00:00:00</div>
-  <div class="timer-controls">
-    <button id="start-timer" class="timer-btn" style="background-color: #4caf50;">Start</button>
-    <button id="pause-timer" class="timer-btn" style="background-color: #ff9800;" disabled>Pause</button>
-    <button id="stop-timer" class="timer-btn" style="background-color: #f44336;" disabled>Stop</button>
-  </div>
-</div>
-            <form id="practice-form">
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" id="date" required>
-                </div>
-                <div class="form-group">
-                    <label for="duration">Duration (minutes)</label>
-                    <input type="number" id="duration" min="1" value="30" required>
-                </div>
-                <div class="form-group">
-                    <label>Techniques Practiced</label>
-                    <div id="technique-checkboxes"></div>
-                </div>
-                <div class="form-group">
-                    <label>Songs Practiced</label>
-                    <div id="song-checkboxes"></div>
-                </div>
-                
-                <!-- New Time Distribution Feature -->
-                <div id="time-distribution-container" class="time-distribution" style="display: none;">
-                    <h3>Time Distribution</h3>
-                    <p>Adjust the sliders to show how you divided your practice time:</p>
-                    <div id="time-sliders"></div>
-                    <div class="time-total">Total allocated: <span id="time-allocated">0</span> of <span id="time-total">0</span> minutes</div>
-                    <div id="time-warning" class="time-warning" style="display: none;">Total time doesn't match practice duration!</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="notes">Notes</label>
-                    <textarea id="notes" rows="3"></textarea>
-                </div>
-                <button type="submit">Save Practice Session</button>
-            </form>
-        </div>
-
-        <div id="techniques-tab" class="tab-content">
-            <h2>Techniques</h2>
+        <form id="practice-form">
             <div class="form-group">
-                <input type="text" id="new-technique" placeholder="Add new technique...">
-                <button id="add-technique-btn">Add</button>
+                <label for="date">Date</label>
+                <input type="date" id="date" required>
             </div>
-            <div id="techniques-list"></div>
-        </div>
-
-        <div id="songs-tab" class="tab-content">
-            <h2>Songs</h2>
             <div class="form-group">
-                <input type="text" id="new-song" placeholder="Add new song...">
-                <button id="add-song-btn">Add</button>
+                <label for="duration">Duration (minutes)</label>
+                <input type="number" id="duration" min="1" value="30" required>
             </div>
-            <div id="songs-list"></div>
-        </div>
-
-        <div id="history-tab" class="tab-content">
-            <h2>Practice History</h2>
-            <table id="history-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Duration</th>
-                        <th>Techniques</th>
-                        <th>Songs</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="history-body"></tbody>
-            </table>
-        </div>
+            <div class="form-group">
+                <label>Techniques Practiced</label>
+                <div id="technique-checkboxes"></div>
+            </div>
+            <div class="form-group">
+                <label>Songs Practiced</label>
+                <div id="song-checkboxes"></div>
+            </div>
+            
+            <!-- New Time Allocation section -->
+            <div class="time-allocation-container">
+                <h3>Time Allocation</h3>
+                <p>Drag the sliders to allocate your practice time between techniques and songs.</p>
+                <p class="allocation-warning" id="allocation-warning">Total allocation doesn't match session duration!</p>
+                <div id="allocation-sliders">
+                    <!-- Sliders will be generated here by JavaScript -->
+                </div>
+                <div class="time-allocation-summary">
+                    <div>Total Allocated: <span id="total-allocated">0</span> minutes</div>
+                    <div>Remaining: <span id="remaining-time">30</span> minutes</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="notes">Notes</label>
+                <textarea id="notes" rows="3"></textarea>
+            </div>
+            <button type="submit">Save Practice Session</button>
+        </form>
     </div>
     
-    <div id="reports-tab" class="tab-content">
-        <h2>Practice Reports</h2>
-        
-        <!-- Report filter controls -->
-        <div class="report-controls">
-            <h3>Time Period</h3>
-            <div class="report-period">
-                <button class="period-btn active" data-period="all">All Time</button>
-                <button class="period-btn" data-period="thisMonth">This Month</button>
-                <button class="period-btn" data-period="thisYear">This Year</button>
-                <button class="period-btn" data-period="lastMonth">Last Month</button>
-                <button class="period-btn" data-period="lastYear">Last Year</button>
-            </div>
-        </div>
-        
-        <div class="chart-container" style="position: relative; height:50vh; width:100%">
-            <canvas id="weekly-chart"></canvas>
-        </div>
-        
-        <!-- Activity-specific time charts -->
-        <div class="activity-details">
-            <h3>Time Spent on Activities</h3>
-            <div class="activity-chart-container">
-                <canvas id="technique-time-chart"></canvas>
-            </div>
-            <div class="activity-chart-container">
-                <canvas id="song-time-chart"></canvas>
-            </div>
-        </div>
-    </div>
-
-<div id="settings-tab" class="tab-content">
-    <h2>Settings</h2>
+    <!-- Your existing HTML continues... -->
     
-    <div class="settings-group">
-        <h3>Progress Requirements</h3>
-        <div class="form-group">
-            <label for="level-up-minutes">Minutes to Level Up a Technique</label>
-            <input type="number" id="level-up-minutes" min="1" value="60">
-            <p class="help-text">Time required to advance a technique by 1 level (max 10)</p>
-        </div>
-        
-        <div class="form-group">
-            <label for="song-completion-minutes">Minutes to Complete a Song</label>
-            <input type="number" id="song-completion-minutes" min="1" value="120">
-            <p class="help-text">Time required to reach 100% completion on a song</p>
-        </div>
-    </div>
-    
-    <div class="settings-group">
-        <h3>Goals & Streaks</h3>
-        <div class="form-group">
-            <label for="streak-threshold">Minimum Minutes for Streak</label>
-            <input type="number" id="streak-threshold" min="1" value="1">
-            <p class="help-text">Minimum practice time for a day to count toward your streak</p>
-        </div>
-        
-        <div class="form-group">
-            <label for="weekly-goal">Weekly Practice Goal (minutes)</label>
-            <input type="number" id="weekly-goal" min="1" value="210">
-            <p class="help-text">Your target practice time each week</p>
-        </div>
-    </div>
-    
-    <button id="save-settings-btn">Save Settings</button>
-
-
-<div class="settings-group">
-    <h3>Data Management</h3>
-    <p>Back up your practice data or restore from a previous backup:</p>
-    <div class="data-management-buttons">
-        <button id="export-data-btn">Export Data</button>
-        <button id="import-data-btn">Import Data</button>
-    </div>
-    <input type="file" id="import-file" style="display: none;" accept=".json">
-</div>
-</div>
-
     <script>
-        // Simple data store
+        // Your existing JavaScript code here...
+        
+        // Add to your existing practiceData structure
+        // Add timeAllocations to the session objects
         let practiceData = {
             sessions: [],
             techniques: [
@@ -515,144 +131,152 @@
             }
         };
         
-        // Add the timer variable declaration here
-        let timer = {
-            running: false,
-            interval: null,
-            seconds: 0,
-            display: null,
-            startBtn: null,
-            pauseBtn: null,
-            stopBtn: null
-        };
+        // New functions for time allocation feature
         
-        // Variable to store selected techniques and songs for time distribution
-        let selectedActivities = {
-            techniques: [],
-            songs: []
-        };
-        
-        // Variable to store current report filter period
-        let currentReportPeriod = 'all';
-
-        // Load data from localStorage
-        function loadData() {
-            const savedData = localStorage.getItem('guitarPracticeData');
-            if (savedData) {
-                practiceData = JSON.parse(savedData);
-            }
+        // Function to update time allocation sliders based on selections
+        function updateTimeAllocationSliders() {
+            const container = document.getElementById('allocation-sliders');
+            container.innerHTML = '';
             
-            // Set today's date as default
-            document.getElementById('date').valueAsDate = new Date();
+            const duration = Number(document.getElementById('duration').value);
+            let selectedItems = [];
             
-            renderApp();
-        }
-
-        // Save data to localStorage
-        function saveUserData() {
-            localStorage.setItem('guitarPracticeData', JSON.stringify(practiceData));
-        }
-
-        // Calculate stats
-        function calculateStats() {
-            // Total practice time
-            const totalMinutes = practiceData.sessions.reduce((total, session) => 
-                total + Number(session.duration), 0);
-            document.getElementById('total-time').textContent = `${totalMinutes} minutes`;
-            
-            // Session count
-            document.getElementById('session-count').textContent = practiceData.sessions.length;
-            
-            // Current streak
-            const streak = calculateStreak();
-            document.getElementById('current-streak').textContent = `${streak} days`;
-        }
-
-        // Calculate streak
-        function calculateStreak() {
-            if (practiceData.sessions.length === 0) return 0;
-            
-            // Group sessions by date
-            const sessionsByDate = {};
-            practiceData.sessions.forEach(session => {
-                const date = new Date(session.date).toISOString().split('T')[0];
-                sessionsByDate[date] = (sessionsByDate[date] || 0) + Number(session.duration);
-            });
-        }
-
-        // Add new technique
-        function addTechnique() {
-            const input = document.getElementById('new-technique');
-            const techniqueName = input.value.trim();
-            
-            if (techniqueName) {
-                practiceData.techniques.push({
-                    id: Date.now(),
-                    name: techniqueName,
-                    level: 0
-                });
-                
-                input.value = '';
-                saveUserData();
-                renderApp();
-            }
-        }
-
-        // Add new song
-        function addSong() {
-            const input = document.getElementById('new-song');
-            const songName = input.value.trim();
-            
-            if (songName) {
-                practiceData.songs.push({
-                    id: Date.now(),
-                    name: songName,
-                    progress: 0
-                });
-                
-                input.value = '';
-                saveUserData();
-                renderApp();
-            }
-        }
-
-        // Get time allocation from sliders
-        function getTimeAllocation() {
-            const timeAllocation = {
-                techniques: [],
-                songs: []
-            };
-            
-            // Get technique time allocations
-            document.querySelectorAll('#time-sliders input[data-activity-type="technique"]').forEach(slider => {
-                const techId = Number(slider.getAttribute('data-activity-id'));
-                const minutes = Number(slider.value);
-                
-                if (minutes > 0) {
-                    timeAllocation.techniques.push({
+            // Get selected techniques
+            document.querySelectorAll('#technique-checkboxes input:checked').forEach(checkbox => {
+                const techId = Number(checkbox.getAttribute('data-tech-id'));
+                const tech = practiceData.techniques.find(t => t.id === techId);
+                if (tech) {
+                    selectedItems.push({
                         id: techId,
-                        minutes: minutes
+                        name: tech.name,
+                        type: 'technique',
+                        allocation: 0
                     });
                 }
             });
             
-            // Get song time allocations
-            document.querySelectorAll('#time-sliders input[data-activity-type="song"]').forEach(slider => {
-                const songId = Number(slider.getAttribute('data-activity-id'));
-                const minutes = Number(slider.value);
-                
-                if (minutes > 0) {
-                    timeAllocation.songs.push({
+            // Get selected songs
+            document.querySelectorAll('#song-checkboxes input:checked').forEach(checkbox => {
+                const songId = Number(checkbox.getAttribute('data-song-id'));
+                const song = practiceData.songs.find(s => s.id === songId);
+                if (song) {
+                    selectedItems.push({
                         id: songId,
-                        minutes: minutes
+                        name: song.name,
+                        type: 'song',
+                        allocation: 0
                     });
                 }
             });
             
-            return timeAllocation;
+            // If nothing selected, show message
+            if (selectedItems.length === 0) {
+                container.innerHTML = '<p>Select techniques and songs to allocate time.</p>';
+                return;
+            }
+            
+            // Distribute time evenly initially
+            const evenAllocation = Math.floor(duration / selectedItems.length);
+            let remaining = duration - (evenAllocation * selectedItems.length);
+            
+            selectedItems.forEach(item => {
+                item.allocation = evenAllocation;
+                if (remaining > 0) {
+                    item.allocation++;
+                    remaining--;
+                }
+            });
+            
+            // Create sliders for each item
+            selectedItems.forEach((item, index) => {
+                const sliderId = `slider-${item.type}-${item.id}`;
+                const sliderDiv = document.createElement('div');
+                sliderDiv.className = 'slider-container';
+                sliderDiv.innerHTML = `
+                    <div class="slider-label">
+                        <span>${item.name}</span>
+                        <span id="value-${sliderId}">${item.allocation} min</span>
+                    </div>
+                    <input type="range" id="${sliderId}" class="time-slider" 
+                           min="0" max="${duration}" value="${item.allocation}" 
+                           data-index="${index}">
+                `;
+                container.appendChild(sliderDiv);
+                
+                // Add event listener to the slider
+                document.getElementById(sliderId).addEventListener('input', function() {
+                    updateAllocationValues(selectedItems);
+                });
+            });
+            
+            // Store selected items for later use
+            container.dataset.selectedItems = JSON.stringify(selectedItems);
+            
+            // Update summary
+            updateAllocationSummary(selectedItems, duration);
         }
-
-        // Save practice session
+        
+        // Function to update allocation values when sliders change
+        function updateAllocationValues(selectedItems) {
+            const sliders = document.querySelectorAll('.time-slider');
+            const duration = Number(document.getElementById('duration').value);
+            let total = 0;
+            
+            // Update each slider value display and collect total
+            sliders.forEach(slider => {
+                const index = Number(slider.getAttribute('data-index'));
+                const value = Number(slider.value);
+                selectedItems[index].allocation = value;
+                
+                document.getElementById(`value-${slider.id}`).textContent = `${value} min`;
+                total += value;
+            });
+            
+            // Update summary
+            updateAllocationSummary(selectedItems, duration);
+        }
+        
+        // Function to update allocation summary
+        function updateAllocationSummary(selectedItems, duration) {
+            const total = selectedItems.reduce((sum, item) => sum + item.allocation, 0);
+            const remaining = duration - total;
+            
+            document.getElementById('total-allocated').textContent = total;
+            document.getElementById('remaining-time').textContent = remaining;
+            
+            // Show warning if allocation doesn't match duration
+            const warningElement = document.getElementById('allocation-warning');
+            if (remaining !== 0) {
+                warningElement.style.display = 'block';
+            } else {
+                warningElement.style.display = 'none';
+            }
+        }
+        
+        // Function to get time allocations from sliders
+        function getTimeAllocations() {
+            const container = document.getElementById('allocation-sliders');
+            const selectedItemsJson = container.dataset.selectedItems;
+            
+            if (!selectedItemsJson) {
+                return [];
+            }
+            
+            const selectedItems = JSON.parse(selectedItemsJson);
+            const allocations = [];
+            
+            selectedItems.forEach(item => {
+                allocations.push({
+                    id: item.id,
+                    type: item.type,
+                    minutes: item.allocation
+                });
+            });
+            
+            return allocations;
+        }
+        
+        // Modify the savePracticeSession function to include time allocations
         function savePracticeSession(e) {
             e.preventDefault();
             
@@ -660,22 +284,22 @@
             const duration = Number(document.getElementById('duration').value);
             const notes = document.getElementById('notes').value;
             
-            // Get selected techniques IDs
+            // Get selected techniques
             const techniques = [];
             document.querySelectorAll('#technique-checkboxes input:checked').forEach(checkbox => {
                 techniques.push(Number(checkbox.getAttribute('data-tech-id')));
             });
             
-            // Get selected songs IDs
+            // Get selected songs
             const songs = [];
             document.querySelectorAll('#song-checkboxes input:checked').forEach(checkbox => {
                 songs.push(Number(checkbox.getAttribute('data-song-id')));
             });
             
-            // Get time allocation from sliders
-            const timeAllocation = getTimeAllocation();
+            // Get time allocations
+            const timeAllocations = getTimeAllocations();
             
-            // Create new session with time distribution data
+            // Create new session
             const newSession = {
                 id: Date.now(),
                 date,
@@ -683,17 +307,20 @@
                 techniques,
                 songs,
                 notes,
-                timeAllocation
+                timeAllocations // Add this new property
             };
             
             // Add to sessions
             practiceData.sessions.push(newSession);
             
-            // Update technique levels based on detailed time allocation
+            // Update technique levels - Now using allocated time for each technique
             practiceData.techniques = practiceData.techniques.map(tech => {
-                const allocation = timeAllocation.techniques.find(t => t.id === tech.id);
-                if (allocation) {
-                    const levelIncrease = allocation.minutes / practiceData.settings.levelUpMinutes;
+                const techAllocation = timeAllocations.find(
+                    a => a.type === 'technique' && a.id === tech.id
+                );
+                
+                if (techAllocation) {
+                    const levelIncrease = techAllocation.minutes / practiceData.settings.levelUpMinutes;
                     return { 
                         ...tech, 
                         level: Math.min(tech.level + levelIncrease, 10) 
@@ -702,11 +329,14 @@
                 return tech;
             });
             
-            // Update song progress based on detailed time allocation
+            // Update song progress - Now using allocated time for each song
             practiceData.songs = practiceData.songs.map(song => {
-                const allocation = timeAllocation.songs.find(s => s.id === song.id);
-                if (allocation) {
-                    const progressIncrease = (allocation.minutes / practiceData.settings.songCompletionMinutes) * 100;
+                const songAllocation = timeAllocations.find(
+                    a => a.type === 'song' && a.id === song.id
+                );
+                
+                if (songAllocation) {
+                    const progressIncrease = (songAllocation.minutes / practiceData.settings.songCompletionMinutes) * 100;
                     return { 
                         ...song, 
                         progress: Math.min(song.progress + progressIncrease, 100) 
@@ -724,30 +354,33 @@
             document.querySelectorAll('#song-checkboxes input').forEach(checkbox => {
                 checkbox.checked = false;
             });
-            document.getElementById('time-distribution-container').style.display = 'none';
             
-            // Reset selected activities
-            selectedActivities = {
-                techniques: [],
-                songs: []
-            };
+            // Reset time allocation sliders
+            document.getElementById('allocation-sliders').innerHTML = '';
+            document.getElementById('allocation-sliders').dataset.selectedItems = '';
+            document.getElementById('total-allocated').textContent = '0';
+            document.getElementById('remaining-time').textContent = '30';
+            document.getElementById('allocation-warning').style.display = 'none';
             
             saveUserData();
             renderApp();
         }
-
-        // Delete session
+        
+        // Modify the deleteSession function to handle timeAllocations
         function deleteSession(sessionId) {
             const session = practiceData.sessions.find(s => s.id === sessionId);
             
             if (session) {
-                // If session has detailed time allocation, use it for reversal
-                if (session.timeAllocation) {
-                    // Reverse technique level increases based on detailed time allocation
+                // If the session has timeAllocations, use them to reverse progress
+                if (session.timeAllocations && session.timeAllocations.length > 0) {
+                    // Reverse technique level increases
                     practiceData.techniques = practiceData.techniques.map(tech => {
-                        const allocation = session.timeAllocation.techniques.find(t => t.id === tech.id);
-                        if (allocation) {
-                            const levelDecrease = allocation.minutes / practiceData.settings.levelUpMinutes;
+                        const techAllocation = session.timeAllocations.find(
+                            a => a.type === 'technique' && a.id === tech.id
+                        );
+                        
+                        if (techAllocation) {
+                            const levelDecrease = techAllocation.minutes / practiceData.settings.levelUpMinutes;
                             return {
                                 ...tech,
                                 level: Math.max(0, tech.level - levelDecrease)
@@ -756,11 +389,14 @@
                         return tech;
                     });
                     
-                    // Reverse song progress based on detailed time allocation
+                    // Reverse song progress
                     practiceData.songs = practiceData.songs.map(song => {
-                        const allocation = session.timeAllocation.songs.find(s => s.id === song.id);
-                        if (allocation) {
-                            const progressDecrease = (allocation.minutes / practiceData.settings.songCompletionMinutes) * 100;
+                        const songAllocation = session.timeAllocations.find(
+                            a => a.type === 'song' && a.id === song.id
+                        );
+                        
+                        if (songAllocation) {
+                            const progressDecrease = (songAllocation.minutes / practiceData.settings.songCompletionMinutes) * 100;
                             return {
                                 ...song,
                                 progress: Math.max(0, song.progress - progressDecrease)
@@ -769,7 +405,7 @@
                         return song;
                     });
                 } else {
-                    // Fall back to old method if time allocation isn't available
+                    // Fallback to the original method if timeAllocations aren't available
                     // Reverse technique level increases
                     practiceData.techniques = practiceData.techniques.map(tech => {
                         if (session.techniques.includes(tech.id)) {
@@ -802,264 +438,8 @@
                 renderApp();
             }
         }
-            
-            // Get valid dates meeting threshold
-            const validDates = Object.entries(sessionsByDate)
-                .filter(([_, duration]) => duration >= practiceData.settings.streakThreshold)
-                .map(([date]) => date)
-                .sort()
-                .reverse();
-                
-            if (validDates.length === 0) return 0;
-            
-            // Check if practiced today or yesterday
-            const today = new Date().toISOString().split('T')[0];
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const yesterdayStr = yesterday.toISOString().split('T')[0];
-            
-            if (validDates[0] !== today && validDates[0] !== yesterdayStr) {
-                return 0; // Streak broken
-            }
-            
-            // Count consecutive days
-            let streak = 1;
-            for (let i = 0; i < validDates.length - 1; i++) {
-                const current = new Date(validDates[i]);
-                const next = new Date(validDates[i + 1]);
-                
-                const diffDays = Math.ceil(
-                    Math.abs(current - next) / (1000 * 60 * 60 * 24)
-                );
-                
-                if (diffDays === 1) {
-                    streak++;
-                } else {
-                    break;
-                }
-            }
-            
-            return streak;
-        }
-
-        // Render the entire app
-        function renderApp() {
-            renderTechniqueCheckboxes();
-            renderSongCheckboxes();
-            renderTechniquesList();
-            renderSongsList();
-            renderHistory();
-            calculateStats();
-        }
-
-        // Render technique checkboxes in the log form
-        function renderTechniqueCheckboxes() {
-            const container = document.getElementById('technique-checkboxes');
-            container.innerHTML = '';
-            
-            practiceData.techniques.forEach(tech => {
-                const checkbox = document.createElement('div');
-                checkbox.innerHTML = `
-                    <label>
-                        <input type="checkbox" data-tech-id="${tech.id}" class="activity-checkbox" onchange="handleActivitySelection()"> ${tech.name}
-                    </label>
-                `;
-                container.appendChild(checkbox);
-            });
-        }
-
-        // Render song checkboxes in the log form
-        function renderSongCheckboxes() {
-            const container = document.getElementById('song-checkboxes');
-            container.innerHTML = '';
-            
-            practiceData.songs.forEach(song => {
-                const checkbox = document.createElement('div');
-                checkbox.innerHTML = `
-                    <label>
-                        <input type="checkbox" data-song-id="${song.id}" class="activity-checkbox" onchange="handleActivitySelection()"> ${song.name}
-                    </label>
-                `;
-                container.appendChild(checkbox);
-            });
-        }
-
-        // Handle activity checkbox selection
-        function handleActivitySelection() {
-            selectedActivities = {
-                techniques: [],
-                songs: []
-            };
-            
-            // Get selected techniques
-            document.querySelectorAll('#technique-checkboxes input:checked').forEach(checkbox => {
-                const techId = Number(checkbox.getAttribute('data-tech-id'));
-                const tech = practiceData.techniques.find(t => t.id === techId);
-                if (tech) {
-                    selectedActivities.techniques.push({
-                        id: tech.id,
-                        name: tech.name
-                    });
-                }
-            });
-            
-            // Get selected songs
-            document.querySelectorAll('#song-checkboxes input:checked').forEach(checkbox => {
-                const songId = Number(checkbox.getAttribute('data-song-id'));
-                const song = practiceData.songs.find(s => s.id === songId);
-                if (song) {
-                    selectedActivities.songs.push({
-                        id: song.id,
-                        name: song.name
-                    });
-                }
-            });
-            
-            // Update time distribution sliders
-            renderTimeDistributionSliders();
-        }
-
-        // Render time distribution sliders
-        function renderTimeDistributionSliders() {
-            const container = document.getElementById('time-distribution-container');
-            const slidersContainer = document.getElementById('time-sliders');
-            const totalDuration = Number(document.getElementById('duration').value);
-            
-            // Hide container if no activities are selected
-            if (selectedActivities.techniques.length === 0 && selectedActivities.songs.length === 0) {
-                container.style.display = 'none';
-                return;
-            }
-            
-            container.style.display = 'block';
-            slidersContainer.innerHTML = '';
-            
-            // Add sliders for techniques
-            selectedActivities.techniques.forEach(tech => {
-                const sliderContainer = document.createElement('div');
-                sliderContainer.className = 'slider-container';
-                sliderContainer.innerHTML = `
-                    <div class="slider-label">
-                        <span>Technique: ${tech.name}</span>
-                        <span id="tech-time-${tech.id}">0</span> minutes
-                    </div>
-                    <input 
-                        type="range" 
-                        min="0" 
-                        max="${totalDuration}" 
-                        value="0" 
-                        data-activity-type="technique" 
-                        data-activity-id="${tech.id}" 
-                        oninput="updateTimeDistribution(this)"
-                    >
-                `;
-                slidersContainer.appendChild(sliderContainer);
-            });
-            
-            // Add sliders for songs
-            selectedActivities.songs.forEach(song => {
-                const sliderContainer = document.createElement('div');
-                sliderContainer.className = 'slider-container';
-                sliderContainer.innerHTML = `
-                    <div class="slider-label">
-                        <span>Song: ${song.name}</span>
-                        <span id="song-time-${song.id}">0</span> minutes
-                    </div>
-                    <input 
-                        type="range" 
-                        min="0" 
-                        max="${totalDuration}" 
-                        value="0" 
-                        data-activity-type="song" 
-                        data-activity-id="${song.id}" 
-                        oninput="updateTimeDistribution(this)"
-                    >
-                `;
-                slidersContainer.appendChild(sliderContainer);
-            });
-            
-            // Update total time
-            document.getElementById('time-total').textContent = totalDuration;
-            updateTotalTimeAllocated();
-        }
-
-        // Update time distribution when sliders change
-        function updateTimeDistribution(slider) {
-            const activityType = slider.getAttribute('data-activity-type');
-            const activityId = slider.getAttribute('data-activity-id');
-            const minutes = slider.value;
-            
-            // Update display
-            document.getElementById(`${activityType}-time-${activityId}`).textContent = minutes;
-            
-            // Update total
-            updateTotalTimeAllocated();
-        }
-
-        // Calculate and update total allocated time
-        function updateTotalTimeAllocated() {
-            let totalAllocated = 0;
-            
-            // Sum up all slider values
-            document.querySelectorAll('#time-sliders input[type="range"]').forEach(slider => {
-                totalAllocated += Number(slider.value);
-            });
-            
-            const totalDuration = Number(document.getElementById('duration').value);
-            document.getElementById('time-allocated').textContent = totalAllocated;
-            
-            // Show warning if allocated time doesn't match total time
-            const warningElement = document.getElementById('time-warning');
-            if (totalAllocated !== totalDuration) {
-                warningElement.style.display = 'block';
-            } else {
-                warningElement.style.display = 'none';
-            }
-        }
-
-        // Render techniques list
-        function renderTechniquesList() {
-            const container = document.getElementById('techniques-list');
-            container.innerHTML = '';
-            
-            practiceData.techniques.forEach(tech => {
-                const techEl = document.createElement('div');
-                techEl.className = 'technique-item';
-                techEl.innerHTML = `
-                    <div class="flex-between">
-                        <span>${tech.name}</span>
-                        <span>Level: ${tech.level.toFixed(1)}/10</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${(tech.level / 10) * 100}%"></div>
-                    </div>
-                `;
-                container.appendChild(techEl);
-            });
-        }
-
-        // Render songs list
-        function renderSongsList() {
-            const container = document.getElementById('songs-list');
-            container.innerHTML = '';
-            
-            practiceData.songs.forEach(song => {
-                const songEl = document.createElement('div');
-                songEl.className = 'song-item';
-                songEl.innerHTML = `
-                    <div class="flex-between">
-                        <span>${song.name}</span>
-                        <span>${song.progress.toFixed(1)}% Complete</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${song.progress}%"></div>
-                    </div>
-                `;
-                container.appendChild(songEl);
-            });
-        }
-
-        // Render practice history
+        
+        // Modify the renderHistory function to show time allocations
         function renderHistory() {
             const historyBody = document.getElementById('history-body');
             historyBody.innerHTML = '';
@@ -1067,17 +447,35 @@
             [...practiceData.sessions].reverse().forEach(session => {
                 const row = document.createElement('tr');
                 
-                // Get technique names
-                const techNames = session.techniques.map(techId => {
-                    const tech = practiceData.techniques.find(t => t.id === techId);
-                    return tech ? tech.name : '';
-                }).join(', ');
+                // Get technique names with allocations
+                let techNames = '';
+                if (session.timeAllocations) {
+                    const techAllocations = session.timeAllocations.filter(a => a.type === 'technique');
+                    techNames = techAllocations.map(alloc => {
+                        const tech = practiceData.techniques.find(t => t.id === alloc.id);
+                        return tech ? `${tech.name} (${alloc.minutes}m)` : '';
+                    }).join(', ');
+                } else {
+                    techNames = session.techniques.map(techId => {
+                        const tech = practiceData.techniques.find(t => t.id === techId);
+                        return tech ? tech.name : '';
+                    }).join(', ');
+                }
                 
-                // Get song names
-                const songNames = session.songs.map(songId => {
-                    const song = practiceData.songs.find(s => s.id === songId);
-                    return song ? song.name : '';
-                }).join(', ');
+                // Get song names with allocations
+                let songNames = '';
+                if (session.timeAllocations) {
+                    const songAllocations = session.timeAllocations.filter(a => a.type === 'song');
+                    songNames = songAllocations.map(alloc => {
+                        const song = practiceData.songs.find(s => s.id === alloc.id);
+                        return song ? `${song.name} (${alloc.minutes}m)` : '';
+                    }).join(', ');
+                } else {
+                    songNames = session.songs.map(songId => {
+                        const song = practiceData.songs.find(s => s.id === songId);
+                        return song ? song.name : '';
+                    }).join(', ');
+                }
                 
                 row.innerHTML = `
                     <td>${session.date}</td>
@@ -1096,3 +494,74 @@
                 btn.addEventListener('click', function() {
                     const sessionId = Number(this.getAttribute('data-session-id'));
                     deleteSession(sessionId);
+                });
+            });
+        }
+        
+        // Add event listeners for technique and song checkboxes to update time allocation sliders
+        function addCheckboxListeners() {
+            // For techniques
+            document.querySelectorAll('#technique-checkboxes input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateTimeAllocationSliders);
+            });
+            
+            // For songs
+            document.querySelectorAll('#song-checkboxes input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateTimeAllocationSliders);
+            });
+            
+            // For duration input
+            document.getElementById('duration').addEventListener('change', updateTimeAllocationSliders);
+        }
+        
+        // Update the renderTechniqueCheckboxes and renderSongCheckboxes functions to add listeners
+        function renderTechniqueCheckboxes() {
+            const container = document.getElementById('technique-checkboxes');
+            container.innerHTML = '';
+            
+            practiceData.techniques.forEach(tech => {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label>
+                        <input type="checkbox" data-tech-id="${tech.id}"> ${tech.name}
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            });
+            
+            // Add listeners to checkboxes
+            document.querySelectorAll('#technique-checkboxes input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateTimeAllocationSliders);
+            });
+        }
+        
+        function renderSongCheckboxes() {
+            const container = document.getElementById('song-checkboxes');
+            container.innerHTML = '';
+            
+            practiceData.songs.forEach(song => {
+                const checkbox = document.createElement('div');
+                checkbox.innerHTML = `
+                    <label>
+                        <input type="checkbox" data-song-id="${song.id}"> ${song.name}
+                    </label>
+                `;
+                container.appendChild(checkbox);
+            });
+            
+            // Add listeners to checkboxes
+            document.querySelectorAll('#song-checkboxes input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateTimeAllocationSliders);
+            });
+        }
+        
+        // Document Ready - Make sure to include this in your event listener section
+        document.addEventListener('DOMContentLoaded', () => {
+            // Your existing DOMContentLoaded code...
+            
+            // For duration input
+            document.getElementById('duration').addEventListener('change', updateTimeAllocationSliders);
+        });
+    </script>
+</body>
+</html>
