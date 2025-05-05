@@ -578,6 +578,230 @@
                 const date = new Date(session.date).toISOString().split('T')[0];
                 sessionsByDate[date] = (sessionsByDate[date] || 0) + Number(session.duration);
             });
+        }
+
+        // Add new technique
+        function addTechnique() {
+            const input = document.getElementById('new-technique');
+            const techniqueName = input.value.trim();
+            
+            if (techniqueName) {
+                practiceData.techniques.push({
+                    id: Date.now(),
+                    name: techniqueName,
+                    level: 0
+                });
+                
+                input.value = '';
+                saveUserData();
+                renderApp();
+            }
+        }
+
+        // Add new song
+        function addSong() {
+            const input = document.getElementById('new-song');
+            const songName = input.value.trim();
+            
+            if (songName) {
+                practiceData.songs.push({
+                    id: Date.now(),
+                    name: songName,
+                    progress: 0
+                });
+                
+                input.value = '';
+                saveUserData();
+                renderApp();
+            }
+        }
+
+        // Get time allocation from sliders
+        function getTimeAllocation() {
+            const timeAllocation = {
+                techniques: [],
+                songs: []
+            };
+            
+            // Get technique time allocations
+            document.querySelectorAll('#time-sliders input[data-activity-type="technique"]').forEach(slider => {
+                const techId = Number(slider.getAttribute('data-activity-id'));
+                const minutes = Number(slider.value);
+                
+                if (minutes > 0) {
+                    timeAllocation.techniques.push({
+                        id: techId,
+                        minutes: minutes
+                    });
+                }
+            });
+            
+            // Get song time allocations
+            document.querySelectorAll('#time-sliders input[data-activity-type="song"]').forEach(slider => {
+                const songId = Number(slider.getAttribute('data-activity-id'));
+                const minutes = Number(slider.value);
+                
+                if (minutes > 0) {
+                    timeAllocation.songs.push({
+                        id: songId,
+                        minutes: minutes
+                    });
+                }
+            });
+            
+            return timeAllocation;
+        }
+
+        // Save practice session
+        function savePracticeSession(e) {
+            e.preventDefault();
+            
+            const date = document.getElementById('date').value;
+            const duration = Number(document.getElementById('duration').value);
+            const notes = document.getElementById('notes').value;
+            
+            // Get selected techniques IDs
+            const techniques = [];
+            document.querySelectorAll('#technique-checkboxes input:checked').forEach(checkbox => {
+                techniques.push(Number(checkbox.getAttribute('data-tech-id')));
+            });
+            
+            // Get selected songs IDs
+            const songs = [];
+            document.querySelectorAll('#song-checkboxes input:checked').forEach(checkbox => {
+                songs.push(Number(checkbox.getAttribute('data-song-id')));
+            });
+            
+            // Get time allocation from sliders
+            const timeAllocation = getTimeAllocation();
+            
+            // Create new session with time distribution data
+            const newSession = {
+                id: Date.now(),
+                date,
+                duration,
+                techniques,
+                songs,
+                notes,
+                timeAllocation
+            };
+            
+            // Add to sessions
+            practiceData.sessions.push(newSession);
+            
+            // Update technique levels based on detailed time allocation
+            practiceData.techniques = practiceData.techniques.map(tech => {
+                const allocation = timeAllocation.techniques.find(t => t.id === tech.id);
+                if (allocation) {
+                    const levelIncrease = allocation.minutes / practiceData.settings.levelUpMinutes;
+                    return { 
+                        ...tech, 
+                        level: Math.min(tech.level + levelIncrease, 10) 
+                    };
+                }
+                return tech;
+            });
+            
+            // Update song progress based on detailed time allocation
+            practiceData.songs = practiceData.songs.map(song => {
+                const allocation = timeAllocation.songs.find(s => s.id === song.id);
+                if (allocation) {
+                    const progressIncrease = (allocation.minutes / practiceData.settings.songCompletionMinutes) * 100;
+                    return { 
+                        ...song, 
+                        progress: Math.min(song.progress + progressIncrease, 100) 
+                    };
+                }
+                return song;
+            });
+            
+            // Reset form
+            document.getElementById('duration').value = '30';
+            document.getElementById('notes').value = '';
+            document.querySelectorAll('#technique-checkboxes input').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.querySelectorAll('#song-checkboxes input').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            document.getElementById('time-distribution-container').style.display = 'none';
+            
+            // Reset selected activities
+            selectedActivities = {
+                techniques: [],
+                songs: []
+            };
+            
+            saveUserData();
+            renderApp();
+        }
+
+        // Delete session
+        function deleteSession(sessionId) {
+            const session = practiceData.sessions.find(s => s.id === sessionId);
+            
+            if (session) {
+                // If session has detailed time allocation, use it for reversal
+                if (session.timeAllocation) {
+                    // Reverse technique level increases based on detailed time allocation
+                    practiceData.techniques = practiceData.techniques.map(tech => {
+                        const allocation = session.timeAllocation.techniques.find(t => t.id === tech.id);
+                        if (allocation) {
+                            const levelDecrease = allocation.minutes / practiceData.settings.levelUpMinutes;
+                            return {
+                                ...tech,
+                                level: Math.max(0, tech.level - levelDecrease)
+                            };
+                        }
+                        return tech;
+                    });
+                    
+                    // Reverse song progress based on detailed time allocation
+                    practiceData.songs = practiceData.songs.map(song => {
+                        const allocation = session.timeAllocation.songs.find(s => s.id === song.id);
+                        if (allocation) {
+                            const progressDecrease = (allocation.minutes / practiceData.settings.songCompletionMinutes) * 100;
+                            return {
+                                ...song,
+                                progress: Math.max(0, song.progress - progressDecrease)
+                            };
+                        }
+                        return song;
+                    });
+                } else {
+                    // Fall back to old method if time allocation isn't available
+                    // Reverse technique level increases
+                    practiceData.techniques = practiceData.techniques.map(tech => {
+                        if (session.techniques.includes(tech.id)) {
+                            const levelDecrease = session.duration / practiceData.settings.levelUpMinutes;
+                            return {
+                                ...tech,
+                                level: Math.max(0, tech.level - levelDecrease)
+                            };
+                        }
+                        return tech;
+                    });
+                    
+                    // Reverse song progress
+                    practiceData.songs = practiceData.songs.map(song => {
+                        if (session.songs.includes(song.id)) {
+                            const progressDecrease = (session.duration / practiceData.settings.songCompletionMinutes) * 100;
+                            return {
+                                ...song,
+                                progress: Math.max(0, song.progress - progressDecrease)
+                            };
+                        }
+                        return song;
+                    });
+                }
+                
+                // Remove session
+                practiceData.sessions = practiceData.sessions.filter(s => s.id !== sessionId);
+                
+                saveUserData();
+                renderApp();
+            }
+        }
             
             // Get valid dates meeting threshold
             const validDates = Object.entries(sessionsByDate)
