@@ -284,7 +284,7 @@
 <body>
 
 <div id="login-screen" class="login-container">
-    <h2>Guitar Practice Tracker V1</h2>
+    <h2>Guitar Practice Tracker V1.1</h2>
     <p>Select a user or create a new one:</p>
     
     <div id="user-list" class="user-list">
@@ -815,33 +815,35 @@ function getTimeAllocations() {
 
         // Render songs list
         function renderSongsList() {
-            const container = document.getElementById('songs-list');
-            container.innerHTML = '';
-            
-            practiceData.songs.forEach(song => {
-                const songEl = document.createElement('div');
-                songEl.className = 'song-item';
-                songEl.innerHTML = `
-                    <div class="flex-between">
-                        <span>${song.name}</span>
-                        <span>${song.progress.toFixed(1)}% Complete</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${song.progress}%"></div>
-                    </div>
-                `;
-                container.appendChild(songEl);
-            });
-            
-            // Add event listeners to delete buttons
+    const container = document.getElementById('songs-list');
+    container.innerHTML = '';
+    
+    practiceData.songs.forEach(song => {
+        const songEl = document.createElement('div');
+        songEl.className = 'song-item';
+        songEl.innerHTML = `
+            <div class="song-list-item">
+                <div>
+                    <span>${song.name}</span>
+                    <span>${song.progress.toFixed(1)}% Complete</span>
+                </div>
+                <button class="delete-item-btn" data-song-id="${song.id}">Delete</button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: ${song.progress}%"></div>
+            </div>
+        `;
+        container.appendChild(songEl);
+    });
+    
+    // Add event listeners to delete buttons
     document.querySelectorAll('#songs-list .delete-item-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const songId = Number(this.getAttribute('data-song-id'));
             deleteSong(songId);
         });
     });
-        }
-
+}
         // Render practice history
      function renderHistory() {
     const historyBody = document.getElementById('history-body');
