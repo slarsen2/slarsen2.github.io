@@ -309,7 +309,7 @@
 
 <!-- Firebase Authentication Login Screen -->
 <div id="login-screen" class="login-container">
-    <h2>Guitar Practice Tracker V1.2</h2>
+    <h2>Guitar Practice Tracker V1.3</h2>
     <p>Sign in to track your practice across devices</p>
     
     <div id="auth-forms">
@@ -588,42 +588,45 @@ const firebaseConfig = {
 
     // Firebase Authentication Functions
     function signUp(email, password) {
-        return auth.createUserWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                // Create user document in Firestore
-                return db.collection('users').doc(userCredential.user.uid).set({
-                    email: email,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    practiceData: {
-                        sessions: [],
-                        techniques: [
-                            { id: 1, name: 'Scales', level: 0 },
-                            { id: 2, name: 'Chords', level: 0 },
-                            { id: 3, name: 'Fingerpicking', level: 0 }
-                        ],
-                        songs: [
-                            { id: 1, name: 'Example Song 1', progress: 0 },
-                            { id: 2, name: 'Example Song 2', progress: 0 }
-                        ],
-                        settings: {
-                            levelUpMinutes: 60,
-                            songCompletionMinutes: 120,
-                            streakThreshold: 1,
-                            goalMinutesPerWeek: 210
-                        }
+    // Add console logs for debugging
+    console.log("Attempting to sign up with:", email);
+    
+    return firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            console.log("User created successfully", userCredential.user);
+            // Create user document in Firestore
+            return firebase.firestore().collection('users').doc(userCredential.user.uid).set({
+                email: email,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                practiceData: {
+                    sessions: [],
+                    techniques: [
+                        { id: 1, name: 'Scales', level: 0 },
+                        { id: 2, name: 'Chords', level: 0 },
+                        { id: 3, name: 'Fingerpicking', level: 0 }
+                    ],
+                    songs: [
+                        { id: 1, name: 'Example Song 1', progress: 0 },
+                        { id: 2, name: 'Example Song 2', progress: 0 }
+                    ],
+                    settings: {
+                        levelUpMinutes: 60,
+                        songCompletionMinutes: 120,
+                        streakThreshold: 1,
+                        goalMinutesPerWeek: 210
                     }
-                });
-            })
-            .then(() => {
-                console.log("User created successfully");
-                return true;
-            })
-            .catch((error) => {
-                console.error("Error creating user:", error);
-                throw error;
+                }
             });
-    }
-
+        })
+        .then(() => {
+            console.log("User data created in Firestore");
+            return true;
+        })
+        .catch((error) => {
+            console.error("Error creating user:", error.code, error.message);
+            throw error;
+        });
+}
     function signIn(email, password) {
         return auth.signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
