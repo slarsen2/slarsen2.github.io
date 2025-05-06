@@ -1759,47 +1759,49 @@ const firebaseConfig = {
         });
         
         // Signup button
-        document.getElementById('signup-btn').addEventListener('click', function() {
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
+       document.getElementById('signup-btn').addEventListener('click', function() {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    
+    console.log("Signup button clicked", email);
+    
+    if (!email || !password) {
+        showAuthMessage('Please enter both email and password', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showAuthMessage('Password must be at least 6 characters', 'error');
+        return;
+    }
+    
+    // Show loading state
+    this.textContent = 'Creating account...';
+    this.disabled = true;
+    
+    // Attempt signup
+    signUp(email, password)
+        .then(() => {
+            // Reset button
+            this.textContent = 'Create Account';
+            this.disabled = false;
             
-            if (!email || !password) {
-                showAuthMessage('Please enter both email and password', 'error');
-                return;
-            }
+            // Show success
+            showAuthMessage('Account created! Logging you in...', 'success');
             
-            if (password.length < 6) {
-                showAuthMessage('Password must be at least 6 characters', 'error');
-                return;
-            }
+            // Clear form
+            document.getElementById('signup-email').value = '';
+            document.getElementById('signup-password').value = '';
+        })
+        .catch(error => {
+            // Reset button
+            this.textContent = 'Create Account';
+            this.disabled = false;
             
-            // Show loading state
-            this.textContent = 'Creating account...';
-            this.disabled = true;
-            
-            // Attempt signup
-            signUp(email, password)
-                .then(() => {
-                    // Reset button
-                    this.textContent = 'Create Account';
-                    this.disabled = false;
-                    
-                    // Show success
-                    showAuthMessage('Account created! Logging you in...', 'success');
-                    
-                    // Clear form
-                    document.getElementById('signup-email').value = '';
-                    document.getElementById('signup-password').value = '';
-                })
-                .catch(error => {
-                    // Reset button
-                    this.textContent = 'Create Account';
-                    this.disabled = false;
-                    
-                    // Show error
-                    showAuthMessage(error.message, 'error');
-                });
+            // Show error with specific message
+            showAuthMessage('Error: ' + error.message, 'error');
         });
+});
         
         // Logout button
         document.getElementById('logout-btn').addEventListener('click', function() {
